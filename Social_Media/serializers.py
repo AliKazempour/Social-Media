@@ -27,9 +27,30 @@ class CommentSerializer(serializers.ModelSerializer):
 
 class CommentRetrieveUpdateDestroySerializer(serializers.ModelSerializer):
     user = serializers.StringRelatedField()
+    post = serializers.StringRelatedField()
 
     class Meta:
         model = Comment
+        fields = "__all__"
+        extra_kwargs = {
+            "user": {"read_only": True},
+            "post": {"read_only": True},
+        }
+
+
+class SavedPostSerializer(serializers.ModelSerializer):
+    # user = serializers.StringRelatedField()
+    # post = serializers.StringRelatedField()
+    class Meta:
+        model = SavedPost
+        fields = "__all__"
+
+
+class SavedPostRetrieveDestroySerializer(serializers.ModelSerializer):
+    user = serializers.StringRelatedField()
+    post = serializers.StringRelatedField()
+    class Meta:
+        model = SavedPost
         fields = "__all__"
         extra_kwargs = {
             "user": {"read_only": True},

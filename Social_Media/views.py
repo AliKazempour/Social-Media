@@ -1,6 +1,7 @@
+from django.http import Http404
 from django.shortcuts import render
 from .models import User, Post, Comment, Like, Follower, SavedPost
-from .serializers import PostSerializer, PostRetrieveUpdateDestroySerializer, CommentSerializer, CommentRetrieveUpdateDestroySerializer
+from .serializers import PostSerializer, PostRetrieveUpdateDestroySerializer, CommentSerializer, CommentRetrieveUpdateDestroySerializer, SavedPostSerializer, SavedPostRetrieveDestroySerializer
 from rest_framework import generics
 
 
@@ -49,3 +50,26 @@ class RetrieveUpdateDestroyCommentView(generics.RetrieveUpdateDestroyAPIView):
         post_id = self.kwargs.get('post_id', None)
         comment_id = self.kwargs.get('pk', None)
         return Comment.objects.get(id=comment_id, post=post_id)
+
+
+class ListCreateSavedPostView(generics.ListCreateAPIView):
+    serializer_class = SavedPostSerializer
+
+    def get_queryset(self):
+        """
+        Retrieve a queryset of SavedPost objects filtered by the user_id parameter.
+        """
+        user_id = self.kwargs.get('user_id', None)
+        return SavedPost.objects.filter(user=user_id)
+
+
+class RetrieveUpdateDestroySavedPostView(generics.RetrieveDestroyAPIView):
+    serializer_class = SavedPostRetrieveDestroySerializer
+
+    def get_object(self):
+        """
+        Retrieves a SavedPost object based on the provided user_id and post_id.
+        """
+        user_id = self.kwargs.get('user_id')
+        post_id = self.kwargs.get('pk')
+        return SavedPost.objects.get(id=post_id, user=user_id)
