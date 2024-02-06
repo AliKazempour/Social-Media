@@ -1,5 +1,16 @@
+import django.db
 from .models import User, Post, Comment, Like, Follower, SavedPost
 from rest_framework import serializers
+
+
+class UserSerializer(serializers.ModelSerializer):
+    password = serializers.CharField(write_only=True, required=True, style={
+                                     'input_type': 'password'})
+
+    class Meta:
+        model = User
+        exclude = ('last_login', 'groups', 'user_permissions',
+                   'is_staff', 'is_active')
 
 
 class PostSerializer(serializers.ModelSerializer):
@@ -49,6 +60,7 @@ class SavedPostSerializer(serializers.ModelSerializer):
 class SavedPostRetrieveDestroySerializer(serializers.ModelSerializer):
     user = serializers.StringRelatedField()
     post = serializers.StringRelatedField()
+
     class Meta:
         model = SavedPost
         fields = "__all__"
