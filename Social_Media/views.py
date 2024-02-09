@@ -13,10 +13,16 @@ from .serializers import (
 from rest_framework import generics, status
 from rest_framework.response import Response
 from django.contrib.auth.hashers import make_password
+from rest_framework.permissions import AllowAny, IsAdminUser
 
 
 class ListCreateUser(generics.ListCreateAPIView):
     serializer_class = UserSerializer
+
+    def get_permissions(self):
+        if self.request.method == "GET":
+            return [IsAdminUser()]
+        return [AllowAny()]
 
     def get_queryset(self):
         """
@@ -33,12 +39,6 @@ class ListCreateUser(generics.ListCreateAPIView):
         self.perform_create(serializer)
         headers = self.get_success_headers(serializer.data)
         return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
-
-        # def get_permissions(self):
-        #     if self.request.method == "GET":   --> just Admin
-        #         return []
-        #     elif self.request.method == "POST": --> admin and simple user
-        #         return []
 
 
 class ListCreatePostView(generics.ListCreateAPIView):
