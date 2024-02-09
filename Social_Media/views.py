@@ -16,8 +16,10 @@ from django.contrib.auth.hashers import make_password
 from rest_framework.permissions import (
     AllowAny,
     IsAdminUser,
+    IsAuthenticated,
     IsAuthenticatedOrReadOnly
 )
+from .permissions import PostUserEditPermission
 
 
 class ListCreateUser(generics.ListCreateAPIView):
@@ -58,6 +60,7 @@ class ListCreatePostView(generics.ListCreateAPIView):
 
 class RetrieveUpdateDestroyPostView(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = PostRetrieveUpdateDestroySerializer
+    permission_classes = [IsAuthenticated, PostUserEditPermission]
 
     def get_object(self):
         """
