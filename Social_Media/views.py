@@ -13,7 +13,11 @@ from .serializers import (
 from rest_framework import generics, status
 from rest_framework.response import Response
 from django.contrib.auth.hashers import make_password
-from rest_framework.permissions import AllowAny, IsAdminUser
+from rest_framework.permissions import (
+    AllowAny,
+    IsAdminUser,
+    IsAuthenticatedOrReadOnly
+)
 
 
 class ListCreateUser(generics.ListCreateAPIView):
@@ -43,6 +47,7 @@ class ListCreateUser(generics.ListCreateAPIView):
 
 class ListCreatePostView(generics.ListCreateAPIView):
     serializer_class = PostSerializer
+    permission_classes = [IsAuthenticatedOrReadOnly]
 
     def get_queryset(self):
         """
