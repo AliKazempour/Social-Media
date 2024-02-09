@@ -13,10 +13,22 @@ from .serializers import (
 from rest_framework import generics, status
 from rest_framework.response import Response
 from django.contrib.auth.hashers import make_password
+from rest_framework.permissions import (
+    AllowAny,
+    IsAdminUser,
+    IsAuthenticated,
+    IsAuthenticatedOrReadOnly
+)
+from .permissions import PostUserEditPermission, CommentUserEditPermission
 
 
 class ListCreateUser(generics.ListCreateAPIView):
     serializer_class = UserSerializer
+
+    def get_permissions(self):
+        if self.request.method == "GET":
+            return [IsAdminUser()]
+        return [AllowAny()]
 
     def get_queryset(self):
         """
@@ -34,15 +46,10 @@ class ListCreateUser(generics.ListCreateAPIView):
         headers = self.get_success_headers(serializer.data)
         return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
 
-        # def get_permissions(self):
-        #     if self.request.method == "GET":   --> just Admin
-        #         return []
-        #     elif self.request.method == "POST": --> admin and simple user
-        #         return []
-
 
 class ListCreatePostView(generics.ListCreateAPIView):
     serializer_class = PostSerializer
+    permission_classes = [IsAuthenticatedOrReadOnly]
 
     def get_queryset(self):
         """
@@ -53,6 +60,7 @@ class ListCreatePostView(generics.ListCreateAPIView):
 
 class RetrieveUpdateDestroyPostView(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = PostRetrieveUpdateDestroySerializer
+    permission_classes = [IsAuthenticated, PostUserEditPermission]
 
     def get_object(self):
         """
@@ -64,6 +72,7 @@ class RetrieveUpdateDestroyPostView(generics.RetrieveUpdateDestroyAPIView):
 
 class ListCreateCommentView(generics.ListCreateAPIView):
     serializer_class = CommentSerializer
+    permission_classes = [IsAuthenticatedOrReadOnly]
 
     def get_queryset(self):
         """
@@ -75,6 +84,7 @@ class ListCreateCommentView(generics.ListCreateAPIView):
 
 class RetrieveUpdateDestroyCommentView(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = CommentRetrieveUpdateDestroySerializer
+    permission_classes = [IsAuthenticated, CommentUserEditPermission]
 
     def get_object(self):
         """

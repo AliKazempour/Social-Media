@@ -6,11 +6,12 @@ from rest_framework import serializers
 class UserSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True, required=True, style={
                                      'input_type': 'password'})
+    date_joined = serializers.DateTimeField(read_only=True)
 
     class Meta:
         model = User
         exclude = ('last_login', 'groups', 'user_permissions',
-                   'is_staff', 'is_active')
+                   'is_staff', 'is_active', 'is_superuser')
 
 
 class PostSerializer(serializers.ModelSerializer):

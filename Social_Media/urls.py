@@ -8,7 +8,17 @@ from .views import (
     RetrieveUpdateDestroySavedPostView,
     ListCreateUser,
 )
+from rest_framework_simplejwt.views import (
+    TokenObtainPairView,
+    TokenRefreshView,
+    TokenBlacklistView
+)
+
 urlpatterns = [
+    path('login/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
+    path('token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
+    path('logout/', TokenBlacklistView.as_view(),
+         name='token_blacklist'),
     path('posts/', ListCreatePostView.as_view(), name='posts'),
     path('posts/<int:pk>/', RetrieveUpdateDestroyPostView.as_view(),
          name='post-details'),
