@@ -19,7 +19,7 @@ from rest_framework.permissions import (
     IsAuthenticated,
     IsAuthenticatedOrReadOnly
 )
-from .permissions import PostUserEditPermission
+from .permissions import PostUserEditPermission, CommentUserEditPermission
 
 
 class ListCreateUser(generics.ListCreateAPIView):
@@ -84,6 +84,7 @@ class ListCreateCommentView(generics.ListCreateAPIView):
 
 class RetrieveUpdateDestroyCommentView(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = CommentRetrieveUpdateDestroySerializer
+    permission_classes = [IsAuthenticated, CommentUserEditPermission]
 
     def get_object(self):
         """
