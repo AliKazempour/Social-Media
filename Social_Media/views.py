@@ -39,19 +39,19 @@ class RegisterUser(generics.CreateAPIView):
         headers = self.get_success_headers(serializer.data)
         return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
 
-# class ListCreateUser(generics.ListCreateAPIView):
-#     serializer_class = UserSerializer
 
-#     def get_permissions(self):
-#         if self.request.method == "GET":
-#             return [IsAdminUser()]
-#         return [AllowAny()]
+class ListUserView(generics.ListAPIView):
+    """
+    A view for listing users.
+    """
+    serializer_class = UserSerializer
+    permission_classes = [IsAdminUser]
 
-#     def get_queryset(self):
-#         """
-#         Return a queryset containing all User objects.
-#         """
-#         return User.objects.all()
+    def get_queryset(self):
+        """
+        Get the queryset for listing users.
+        """
+        return User.objects.all()
 
 
 class ListCreatePostView(generics.ListCreateAPIView):
