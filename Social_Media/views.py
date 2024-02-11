@@ -22,19 +22,12 @@ from rest_framework.permissions import (
 from .permissions import PostUserEditPermission, CommentUserEditPermission
 
 
-class ListCreateUser(generics.ListCreateAPIView):
+class RegisterUser(generics.CreateAPIView):
+    """
+    API view for registering a new user.
+    """
     serializer_class = UserSerializer
-
-    def get_permissions(self):
-        if self.request.method == "GET":
-            return [IsAdminUser()]
-        return [AllowAny()]
-
-    def get_queryset(self):
-        """
-        Return a queryset containing all User objects.
-        """
-        return User.objects.all()
+    permission_classes = [AllowAny]
 
     def post(self, request, *args, **kwargs):
         data = request.data.copy()
@@ -45,6 +38,20 @@ class ListCreateUser(generics.ListCreateAPIView):
         self.perform_create(serializer)
         headers = self.get_success_headers(serializer.data)
         return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
+
+# class ListCreateUser(generics.ListCreateAPIView):
+#     serializer_class = UserSerializer
+
+#     def get_permissions(self):
+#         if self.request.method == "GET":
+#             return [IsAdminUser()]
+#         return [AllowAny()]
+
+#     def get_queryset(self):
+#         """
+#         Return a queryset containing all User objects.
+#         """
+#         return User.objects.all()
 
 
 class ListCreatePostView(generics.ListCreateAPIView):

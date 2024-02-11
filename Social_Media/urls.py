@@ -6,7 +6,7 @@ from .views import (
     RetrieveUpdateDestroyCommentView,
     ListCreateSavedPostView,
     RetrieveUpdateDestroySavedPostView,
-    ListCreateUser,
+    RegisterUser,
 )
 from rest_framework_simplejwt.views import (
     TokenObtainPairView,
@@ -15,6 +15,7 @@ from rest_framework_simplejwt.views import (
 )
 
 urlpatterns = [
+    path('register/', RegisterUser.as_view(), name='register'),
     path('login/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
     path('logout/', TokenBlacklistView.as_view(),
@@ -30,5 +31,5 @@ urlpatterns = [
          ListCreateSavedPostView.as_view(), name='savedPosts'),
     path('user/<int:user_id>/savedPosts/<int:pk>/',
          RetrieveUpdateDestroySavedPostView.as_view(), name='savedPost-details'),
-    path('user/', ListCreateUser.as_view(), name='users'),
+#     path('user/', ListCreateUser.as_view(), name='users'),
 ]
