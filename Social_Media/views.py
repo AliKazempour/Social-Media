@@ -1,6 +1,6 @@
 from django.http import Http404
 from django.shortcuts import render
-from .models import User, Post, Comment, Like, Follower, SavedPost
+from .models import User, Post, Comment, Like, SavedPost, Follow
 from .serializers import (
     PostSerializer,
     PostRetrieveUpdateDestroySerializer,
@@ -8,8 +8,10 @@ from .serializers import (
     CommentRetrieveUpdateDestroySerializer,
     SavedPostSerializer,
     SavedPostRetrieveDestroySerializer,
-    UserSerializer
+    UserSerializer,
+    LikePostSerializer
 )
+from rest_framework.exceptions import ValidationError
 from rest_framework import generics, status
 from rest_framework.response import Response
 from django.contrib.auth.hashers import make_password
@@ -126,3 +128,21 @@ class RetrieveUpdateDestroySavedPostView(generics.RetrieveDestroyAPIView):
         user_id = self.kwargs.get('user_id')
         post_id = self.kwargs.get('pk')
         return SavedPost.objects.get(id=post_id, user=user_id)
+
+
+class CreateLikeView(generics.CreateAPIView):
+    serializer_class = LikePostSerializer
+
+    def perform_create(self, serializer):
+        post_id = self.kwargs.get('post_id')
+        post = Post.objects.get(id=post_id)
+        user = self.request.data['user']
+        user = User.objects.get(id=user)
+        like_queryset = Like.objects.filter(user=user, post=post)
+        if like_queryset.exists():
+            raise ValidationError('You have already liked this post')
+        else:
+            post.num_post_likes += 1
+            like = Like.objects.create(user=user, post=post)
+            post.save()
+            like.save()
