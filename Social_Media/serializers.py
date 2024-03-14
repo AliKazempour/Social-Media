@@ -1,5 +1,5 @@
 import django.db
-from .models import User, Post, Comment, Like, Follower, SavedPost
+from .models import User, Post, Comment, Like, SavedPost,Follow
 from rest_framework import serializers
 
 
@@ -7,6 +7,8 @@ class UserSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True, required=True, style={
                                      'input_type': 'password'})
     date_joined = serializers.DateTimeField(read_only=True)
+    num_followers = serializers.IntegerField(read_only=True)
+    num_following = serializers.IntegerField(read_only=True)
 
     class Meta:
         model = User
@@ -69,3 +71,9 @@ class SavedPostRetrieveDestroySerializer(serializers.ModelSerializer):
             "user": {"read_only": True},
             "post": {"read_only": True},
         }
+
+
+class LikePostSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Like
+        fields = "__all__"
