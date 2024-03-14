@@ -8,6 +8,8 @@ class User(AbstractUser):
     avatar = models.ImageField(blank=True, null=True)
     bio = models.CharField(max_length=100, null=True, blank=True)
     phone_number = PhoneNumberField(null=False, blank=False, unique=True)
+    num_followers = models.IntegerField(default=0)
+    num_following = models.IntegerField(default=0)
 
     def __str__(self):
         return self.username
@@ -21,6 +23,8 @@ class Post(models.Model):
     file = models.FileField(null=True, blank=True, validators=[FileExtensionValidator(
         allowed_extensions=['MOV', 'avi', 'mp4', 'webm', 'mkv', 'jpg', 'png'])])
     created = models.DateTimeField(auto_now_add=True)
+    num_post_likes = models.IntegerField(default=0)
+    num_comments = models.IntegerField(default=0)
 
 
 class Comment(models.Model):
@@ -37,11 +41,9 @@ class Like(models.Model):
         User, on_delete=models.CASCADE, related_name='likes')
     post = models.ForeignKey(
         Post, on_delete=models.CASCADE, related_name='likes')
-    comment = models.ForeignKey(
-        Comment, on_delete=models.CASCADE, related_name='likes')
 
 
-class Follower(models.Model):
+class Follow(models.Model):
     follower = models.ForeignKey(
         User, related_name='follower', on_delete=models.CASCADE)
     following = models.ForeignKey(
