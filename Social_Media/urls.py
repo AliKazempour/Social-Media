@@ -8,7 +8,7 @@ from .views import (
     RetrieveUpdateDestroySavedPostView,
     RegisterUser,
     ListUserView,
-    CreateLikeView
+    ListCreateLikeView
     
 )
 from rest_framework_simplejwt.views import (
@@ -28,7 +28,7 @@ urlpatterns = [
     path('posts/<int:pk>/', RetrieveUpdateDestroyPostView.as_view(),
          name='post-details'),
     path('posts/<int:post_id>/likes/',
-         CreateLikeView.as_view(), name='add-like'),
+         ListCreateLikeView.as_view(), name='add-like'),
     path('posts/<int:post_id>/comments/',
          ListCreateCommentView.as_view(), name='comments'),
     path('posts/<int:post_id>/comments/<int:pk>/',

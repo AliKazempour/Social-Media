@@ -130,18 +130,29 @@ class RetrieveUpdateDestroySavedPostView(generics.RetrieveDestroyAPIView):
         return SavedPost.objects.get(id=post_id, user=user_id)
 
 
-class CreateLikeView(generics.CreateAPIView):
+class ListCreateLikeView(generics.ListCreateAPIView):
     serializer_class = LikePostSerializer
 
-    """
-    Perform the create action for the Like model.
+    def get_queryset(self):
+        """
+        Get the queryset of likes related to a specific post.
+        """
+        post_id = self.kwargs.get('post_id')
+        post = Post.objects.get(id=post_id)
+        like_queryset = Like.objects.filter(post=post)
+        return like_queryset
 
-    Checks if the user has already liked the post, if so raises a validation
-    error, else creates a new Like instance and updates the number of likes
-    for the post.
-    """
+
 
     def perform_create(self, serializer):
+        """
+        Perform the create action for the Like model.
+
+        Checks if the user has already liked the post, if so raises a validation
+        error, else creates a new Like instance and updates the number of likes
+        for the post.
+        """
+
         post_id = self.kwargs.get('post_id')
         post = Post.objects.get(id=post_id)
         user = self.request.data['user']
