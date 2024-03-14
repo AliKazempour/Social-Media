@@ -125,8 +125,23 @@ class ListCreateCommentView(generics.ListCreateAPIView):
 
 
 class RetrieveUpdateDestroyCommentView(generics.RetrieveUpdateDestroyAPIView):
+    """
+    A view for retrieving, updating and deleting a specific Comment instance
+    based on the comment id.
+    """
     serializer_class = CommentRetrieveUpdateDestroySerializer
     permission_classes = [IsAuthenticated, CommentUserEditPermission]
+
+    def get_object(self):
+        """
+        Retrieve a comment object from the database based on the provided post_id and comment_id.
+
+        Returns:
+            Comment: The retrieved Comment object.
+        """
+        post_id = self.kwargs.get('post_id', None)
+        comment_id = self.kwargs.get('pk', None)
+        return Comment.objects.get(id=comment_id, post_id=post_id)
 
     def get_object(self):
         """
