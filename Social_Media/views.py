@@ -133,6 +133,14 @@ class RetrieveUpdateDestroySavedPostView(generics.RetrieveDestroyAPIView):
 class CreateLikeView(generics.CreateAPIView):
     serializer_class = LikePostSerializer
 
+    """
+    Perform the create action for the Like model.
+
+    Checks if the user has already liked the post, if so raises a validation
+    error, else creates a new Like instance and updates the number of likes
+    for the post.
+    """
+
     def perform_create(self, serializer):
         post_id = self.kwargs.get('post_id')
         post = Post.objects.get(id=post_id)
