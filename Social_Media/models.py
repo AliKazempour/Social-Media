@@ -10,6 +10,8 @@ class User(AbstractUser):
     phone_number = PhoneNumberField(null=False, blank=False, unique=True)
     num_followers = models.IntegerField(default=0)
     num_following = models.IntegerField(default=0)
+    following = models.ManyToManyField(
+        "self", related_name="followers", symmetrical=False, blank=True, null=True)
 
     def __str__(self):
         return self.username
@@ -41,13 +43,6 @@ class Like(models.Model):
         User, on_delete=models.CASCADE, related_name='likes')
     post = models.ForeignKey(
         Post, on_delete=models.CASCADE, related_name='likes')
-
-
-class Follow(models.Model):
-    follower = models.ForeignKey(
-        User, related_name='follower', on_delete=models.CASCADE)
-    following = models.ForeignKey(
-        User, related_name='following', on_delete=models.CASCADE)
 
 
 class SavedPost(models.Model):

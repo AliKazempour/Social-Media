@@ -1,5 +1,6 @@
 import django.db
-from .models import User, Post, Comment, Like, SavedPost,Follow
+import django.urls
+from .models import User, Post, Comment, Like, SavedPost
 from rest_framework import serializers
 
 
@@ -77,3 +78,8 @@ class LikePostSerializer(serializers.ModelSerializer):
     class Meta:
         model = Like
         fields = "__all__"
+
+
+
+class FollowSerializer(serializers.Serializer):
+    pass
