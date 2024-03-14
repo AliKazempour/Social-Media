@@ -57,6 +57,9 @@ class ListUserView(generics.ListAPIView):
 
 
 class ListCreatePostView(generics.ListCreateAPIView):
+    """
+    A view for listing and creating posts.
+    """
     serializer_class = PostSerializer
     permission_classes = [IsAuthenticatedOrReadOnly]
 
@@ -68,6 +71,10 @@ class ListCreatePostView(generics.ListCreateAPIView):
 
 
 class RetrieveUpdateDestroyPostView(generics.RetrieveUpdateDestroyAPIView):
+    """
+    A view for retrieving, updating and deleting a specific post instance
+    based on the post id.
+    """
     serializer_class = PostRetrieveUpdateDestroySerializer
     permission_classes = [IsAuthenticated, PostUserEditPermission]
 
@@ -80,6 +87,12 @@ class RetrieveUpdateDestroyPostView(generics.RetrieveUpdateDestroyAPIView):
 
 
 class ListCreateCommentView(generics.ListCreateAPIView):
+    """
+    A view for listing and creating comments.
+
+    This view requires authentication to create comments. It returns a list of
+    comments related to a specific post when the HTTP GET method is used.
+    """
     serializer_class = CommentSerializer
     permission_classes = [IsAuthenticatedOrReadOnly]
 
@@ -112,8 +125,23 @@ class ListCreateCommentView(generics.ListCreateAPIView):
 
 
 class RetrieveUpdateDestroyCommentView(generics.RetrieveUpdateDestroyAPIView):
+    """
+    A view for retrieving, updating and deleting a specific Comment instance
+    based on the comment id.
+    """
     serializer_class = CommentRetrieveUpdateDestroySerializer
     permission_classes = [IsAuthenticated, CommentUserEditPermission]
+
+    def get_object(self):
+        """
+        Retrieve a comment object from the database based on the provided post_id and comment_id.
+
+        Returns:
+            Comment: The retrieved Comment object.
+        """
+        post_id = self.kwargs.get('post_id', None)
+        comment_id = self.kwargs.get('pk', None)
+        return Comment.objects.get(id=comment_id, post_id=post_id)
 
     def get_object(self):
         """
