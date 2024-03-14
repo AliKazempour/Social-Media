@@ -90,6 +90,26 @@ class ListCreateCommentView(generics.ListCreateAPIView):
         post_id = self.kwargs.get('post_id', None)
         return Comment.objects.filter(post=post_id)
 
+    def perform_create(self, serializer):
+        """
+        Perform the creation of a comment associated with a specific post.
+        
+        Parameters:
+        - serializer: The serializer object to process the data for creating the comment.
+        """
+        post_id = self.kwargs.get('post_id')
+        post = Post.objects.get(id=post_id)
+        user = self.request.data['user']
+        user = User.objects.get(id=user)
+        post.num_comments += 1
+        comment = Comment.objects.create(
+            user=user,
+            post=post,
+            content=self.request.data['content']
+        )
+        post.save()
+        comment.save()
+
 
 class RetrieveUpdateDestroyCommentView(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = CommentRetrieveUpdateDestroySerializer
@@ -141,8 +161,6 @@ class ListCreateLikeView(generics.ListCreateAPIView):
         post = Post.objects.get(id=post_id)
         like_queryset = Like.objects.filter(post=post)
         return like_queryset
-
-
 
     def perform_create(self, serializer):
         """
