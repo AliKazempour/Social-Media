@@ -57,6 +57,9 @@ class ListUserView(generics.ListAPIView):
 
 
 class ListCreatePostView(generics.ListCreateAPIView):
+    """
+    A view for listing and creating posts.
+    """
     serializer_class = PostSerializer
     permission_classes = [IsAuthenticatedOrReadOnly]
 
