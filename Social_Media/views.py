@@ -87,6 +87,12 @@ class RetrieveUpdateDestroyPostView(generics.RetrieveUpdateDestroyAPIView):
 
 
 class ListCreateCommentView(generics.ListCreateAPIView):
+    """
+    A view for listing and creating comments.
+
+    This view requires authentication to create comments. It returns a list of
+    comments related to a specific post when the HTTP GET method is used.
+    """
     serializer_class = CommentSerializer
     permission_classes = [IsAuthenticatedOrReadOnly]
 
