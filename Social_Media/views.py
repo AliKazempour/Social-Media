@@ -71,6 +71,10 @@ class ListCreatePostView(generics.ListCreateAPIView):
 
 
 class RetrieveUpdateDestroyPostView(generics.RetrieveUpdateDestroyAPIView):
+    """
+    A view for retrieving, updating and deleting a specific post instance
+    based on the post id.
+    """
     serializer_class = PostRetrieveUpdateDestroySerializer
     permission_classes = [IsAuthenticated, PostUserEditPermission]
 
