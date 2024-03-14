@@ -1,6 +1,6 @@
 from django.http import Http404
 from django.shortcuts import render
-from .models import User, Post, Comment, Like, SavedPost, Follow
+from .models import User, Post, Comment, Like, SavedPost
 from .serializers import (
     PostSerializer,
     PostRetrieveUpdateDestroySerializer,
@@ -9,7 +9,8 @@ from .serializers import (
     SavedPostSerializer,
     SavedPostRetrieveDestroySerializer,
     UserSerializer,
-    LikePostSerializer
+    LikePostSerializer,
+    FollowSerializer
 )
 from rest_framework.exceptions import ValidationError
 from rest_framework import generics, status
@@ -227,3 +228,36 @@ class ListCreateLikeView(generics.ListCreateAPIView):
             like = Like.objects.create(user=user, post=post)
             post.save()
             like.save()
+
+
+class FollowView(generics.UpdateAPIView):
+    """
+    View for following/unfollowing a user.
+
+    Allows users to follow/unfollow a user by making a PUT/DELETE request
+    with the user's id in the URL.
+    """
+    serializer_class = FollowSerializer
+    permission_classes = [IsAuthenticated]
+
+    def update(self, request, *args, **kwargs):
+        user_to_follow = User.objects.get(pk=kwargs['pk'])
+        user = request.user
+        if user_to_follow != user:
+            user.following.add(user_to_follow)
+            user.num_following += 1
+            user_to_follow.num_followers += 1
+            user.save()
+            user_to_follow.save()
+            return Response({'message': 'Followed successfully!'})
+        return Response({'message': 'You cannot follow yourself.'})
+
+    def delete(self, request, *args, **kwargs):
+        user_to_unfollow = User.objects.get(pk=kwargs['pk'])
+        user = request.user
+        user.following.remove(user_to_unfollow)
+        user.num_following -= 1
+        user_to_unfollow.num_followers -= 1
+        user.save()
+        user_to_unfollow.save()
+        return Response({'message': 'Unfollowed successfully!'})

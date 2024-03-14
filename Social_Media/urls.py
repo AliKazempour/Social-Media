@@ -8,8 +8,9 @@ from .views import (
     RetrieveUpdateDestroySavedPostView,
     RegisterUser,
     ListUserView,
-    ListCreateLikeView
-    
+    ListCreateLikeView,
+    FollowView
+
 )
 from rest_framework_simplejwt.views import (
     TokenObtainPairView,
@@ -37,4 +38,5 @@ urlpatterns = [
          ListCreateSavedPostView.as_view(), name='savedPosts'),
     path('user/<int:user_id>/savedPosts/<int:pk>/',
          RetrieveUpdateDestroySavedPostView.as_view(), name='savedPost-details'),
+    path('users/<int:pk>/follow/', FollowView.as_view(), name='follow'),
 ]
